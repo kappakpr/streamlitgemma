@@ -11,6 +11,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from dotenv import load_dotenv
 import os
 load_dotenv()
+from pathlib import Path
 
 ## load the GROQ And OpenAI API KEY 
 groq_api_key=os.getenv('GROQ_API_KEY')
@@ -29,7 +30,6 @@ Please provide the most accurate response based on the question
 {context}
 <context>
 Questions:{input}
-
 """
 )
 
@@ -44,20 +44,25 @@ def vector_embedding():
         st.session_state.final_documents=st.session_state.text_splitter.split_documents(st.session_state.docs[:20]) #splitting
         st.session_state.vectors=FAISS.from_documents(st.session_state.final_documents,st.session_state.embeddings) #vector OpenAI embeddings
 
+uploaded_file = st.file_uploader("Choose a file")
+if uploaded_file is not None:
+#     # To read file as bytes:
+#     bytes_data = uploaded_file.getvalue()
+#     st.write(bytes_data)
 
+    # Save uploaded file to 'F:/tmp' folder.
+    save_folder = './us_census'
+    save_path = Path(save_folder, uploaded_file.name)
+    with open(save_path, mode='wb') as w:
+        w.write(uploaded_file.getvalue())
 
-
-
-prompt1=st.text_input("Enter Your Question From Doduments")
-
+prompt1=st.text_input("Enter Your Question From Documents")
 
 if st.button("Documents Embedding"):
     vector_embedding()
     st.write("Vector Store DB Is Ready")
 
 import time
-
-
 
 if prompt1:
     document_chain=create_stuff_documents_chain(llm,prompt)

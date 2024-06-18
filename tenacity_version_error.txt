@@ -1,0 +1,5 @@
+error when deploying to huggingface and streamlit
+
+https://github.com/langchain-ai/langchain/issues/22972
+Error : ModuleNotFoundError: No module named 'tenacity.asyncio'
+resolution : tenacity just released 8.4.0, so just downgrading to 8.3.0 solves an issue.
